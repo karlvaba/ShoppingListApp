@@ -30,36 +30,17 @@ import {
 } from 'react-native/Libraries/NewAppScreen';
 import ShoppingListPreview from './src/components/ShoppingListPreview';
 import ShoppingList from './src/components/ShoppingList';
+import getAll from './src/components/DataAccess';
 
 const Stack = createNativeStackNavigator();
 
 const App = ()  => {
 
-  const shoppingList = [
-    {
-      id: 1,
-      created: "21 aug 2021", 
-      items: [
-        {name: "Milk", quantity: 2},
-        {name: "Eggs", quantity: 1}
-      ]}, 
-    {
-      id: 2,
-      created: "22 aug 2021", 
-      items: [
-        {name: "Bread", quantity: 7},
-        {name: "Beer", quantity: 2}
-      ]}
-  ]
-
   return (
     <NavigationContainer>
       <Stack.Navigator>
-        <Stack.Screen name="All shopping lists">
-          {(props) => <ShoppingListPreview {...props} shoppingListList={shoppingList} />}
-        </Stack.Screen>
-        <Stack.Screen name="List details" component={ShoppingList}>
-        </Stack.Screen>
+        <Stack.Screen name="All shopping lists" component={ShoppingListPreview} />
+        <Stack.Screen name="List details" component={ShoppingList} />
       </Stack.Navigator>
     </NavigationContainer>
   );

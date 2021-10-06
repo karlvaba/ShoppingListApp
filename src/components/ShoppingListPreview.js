@@ -1,5 +1,6 @@
 import React from 'react';
 import ShoppingList from './ShoppingList';
+import getAll from './DataAccess';
 
 import {
 	Button,
@@ -9,16 +10,20 @@ import {
 	TouchableHighlight,
   } from 'react-native';
 
-const ShoppingListPreview = ({navigation, shoppingListList}) => {
-	return (  
+const ShoppingListPreview = ({navigation}) => {
+	let { error, isPending, data } = getAll()
+	console.log(data.shoppingLists)
+
+	return (
 		<View>
-			{shoppingListList.map((shoppingList) => 
-				 (
-					<TouchableHighlight key={shoppingList.id} onPress={() => navigation.navigate('List details', {shoppingList: shoppingList})}>
+			{ isPending && <Text>Loading data...</Text>}
+			{ !isPending && data && data.shoppingLists.map((shoppingList) => 
+				(
+					<TouchableHighlight onPress={ ()=> navigation.navigate('List details', { shoppingList: shoppingList })}>
 						<View>
-							<Text style={styles.bigBlue}>{shoppingList.created}</Text>
+							<Text style={styles.bigBlue}>Created at: {shoppingList.created}, number of items: {shoppingList.items.length}</Text>
 						</View>
-					</TouchableHighlight>	
+					</TouchableHighlight>			
 				)
 			)}
 		</View>
