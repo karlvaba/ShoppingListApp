@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 
-const dbUrl = "https://api.jsonbin.io/b/615dbfb6aa02be1d445545d0/1"
+const dbUrl = "https://api.jsonbin.io/b/615e085caa02be1d44556536/latest"
 
 const getAll = () => {
   const [data, setData] = useState(null);
@@ -31,3 +31,4 @@ const getAll = () => {
 }
  
 export default getAll;
+
