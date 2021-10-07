@@ -33,7 +33,7 @@ The cloud storage solution used for this was https://jsonbin.io/ . It enables th
 
 As for the inner workings of the app, I will just add an image of the component tree:
 
-![ComponentTree](docs/images/diagram.png)
+![ComponentTree](./docs/images/diagram.PNG)
 
 ## Other notes
 
