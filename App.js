@@ -1,50 +1,29 @@
-/**
- * Sample React Native App
- * https://github.com/facebook/react-native
- *
- * @format
- * @flow strict-local
- */
-
-import React from 'react';
-import { useState } from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
-
-import {
-  SafeAreaView,
-  ScrollView,
-  StatusBar,
-  StyleSheet,
-  Text,
-  useColorScheme,
-  View,
-} from 'react-native';
-
-import {
-  Colors,
-  DebugInstructions,
-  Header,
-  LearnMoreLinks,
-  ReloadInstructions,
-} from 'react-native/Libraries/NewAppScreen';
-import ShoppingListPreview from './src/components/ShoppingListPreview';
+import React from 'react';
 import ShoppingList from './src/components/ShoppingList';
-import getAll from './src/components/DataAccess';
+import ShoppingListPreview from './src/components/ShoppingListPreview';
+
 
 const Stack = createNativeStackNavigator();
 
-const App = ()  => {
-
+/*
+  The root component. Uses a stack navigator to navigate between
+  the list preview screen (where all the shopping lists are displayed)
+  and a single list's detailed view. 
+*/
+const App = () => {
   return (
     <NavigationContainer>
       <Stack.Navigator>
-        <Stack.Screen name="All shopping lists" component={ShoppingListPreview} />
-        <Stack.Screen name="List details" component={ShoppingList} />
+        <Stack.Screen //Preview screen
+          name="All shopping lists"
+          component={ShoppingListPreview}
+        /> 
+        <Stack.Screen name="List details" component={ShoppingList}/> 
       </Stack.Navigator>
     </NavigationContainer>
   );
 };
-
 
 export default App;
