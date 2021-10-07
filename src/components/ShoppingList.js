@@ -17,7 +17,7 @@ import ShoppingListItem from './ShoppingListItem';
 
     Returns the updated shopping list object
 */
-const addItemToShoppingList = ({ shoppingList, itemName }) => {
+export const addItemToShoppingList = ({ shoppingList, itemName }) => {
     if (shoppingList.items.length === 0) {
         const items = [{ id: '1', name: itemName, checked: false }];
         const newShoppingList = {
@@ -49,7 +49,7 @@ const addItemToShoppingList = ({ shoppingList, itemName }) => {
     Returns the updated shopping list object
 */
 
-const removeItemFromShoppingList = ({ shoppingList, item }) => {
+export const removeItemFromShoppingList = ({ shoppingList, item }) => {
     const newItems = shoppingList.items.filter(
         listItem => listItem.id !== item.id,
     );
@@ -68,7 +68,7 @@ const removeItemFromShoppingList = ({ shoppingList, item }) => {
     Returns the updated shopping list object
 */
 
-const updateItemInShoppingList = ({ shoppingList, item }) => {
+export const updateItemInShoppingList = ({ shoppingList, item }) => {
     const filtered = shoppingList.items.filter(
         listItem => listItem.id !== item.id,
     );
