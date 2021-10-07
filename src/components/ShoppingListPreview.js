@@ -3,6 +3,7 @@ import { useState,useEffect } from 'react';
 import ShoppingList from './ShoppingList';
 import getAll from './DataAccess';
 import { Dimensions } from 'react-native';
+import { update } from './DataAccess';
 
 import {
 	Button,
@@ -27,6 +28,7 @@ const ShoppingListPreview = ({navigation}) => {
 
 	useEffect(() => {
 		const unsubscribe = navigation.addListener('focus', () => {
+			setIsPending(true);
 			fetch(dbUrl)
 			.then(res => {
 				if (!res.ok) {
@@ -46,27 +48,7 @@ const ShoppingListPreview = ({navigation}) => {
 			})
 		});
 	  	
-	}, [navigation])
-
-	const updateList = (shoppingList) => {
-	
-		const filtered = data.shoppingLists.filter(existingList => existingList.id !== shoppingList.id)
-
-		const newLists = [...filtered, shoppingList]
-		const newData = {shoppingLists: newLists}
-
-
-		fetch('https://api.jsonbin.io/b/615e21759548541c29bf2c80', {
-			method: 'PUT',
-			headers: { "Content-Type": "application/json" },
-			body: JSON.stringify(newData)
-		}).then(() => {
-			console.log("fetch done")
-			
-		}).catch(err => {
-			console.log(err)
-		  })
-	}
+	}, [])
 
 	const createNewList = () => {
 		const newId = Math.max(data.shoppingLists.map(o => parseInt(o.id))) + 1;
@@ -79,71 +61,69 @@ const ShoppingListPreview = ({navigation}) => {
 
 		const newShoppingList = {id: newId, created: date, items: []}
 
-		navigation.navigate('List details', { shoppingList: newShoppingList, onUpdate: updateList })
+		navigation.navigate('List details', { shoppingList: newShoppingList, onSave: onSave, onDelete: onDelete })
 	}
 
-	const deleteList = (listId) => {
+	const onSave = (shoppingList) => {
+		const filtered = data.shoppingLists.filter(existingList => existingList.id !== shoppingList.id)
+		const newLists = [...filtered, shoppingList]
+		const newData = {shoppingLists: newLists}
+		
+		update(newData)
+		
+	}
 
-		const filtered = data.shoppingLists.filter(existingList => existingList.id !== listId)
-
+	const onDelete = (shoppingListId) => {
+		const filtered = data.shoppingLists.filter(existingList => existingList.id !== shoppingListId)
 		const newData = {shoppingLists: filtered}
+		
+		update(newData)
+	} 
 
-		fetch('https://api.jsonbin.io/b/615e21759548541c29bf2c80', {
-			method: 'PUT',
-			headers: { "Content-Type": "application/json" },
-			body: JSON.stringify(newData)
-		}).then(() => {
-			console.log("fetch done")	
-		}).catch(err => {
-			console.log(err)
-		})
-	}
+
 
 	return (
-		<ScrollView>
-			{ !isPending && 
-			<View style={styles.centered}>
-				<TouchableOpacity onPress={() => createNewList()}>
-							<View>
-								<Image source={require('../assets/images/add.png')} />
-								<Text>New list</Text>
-							</View>
-				</TouchableOpacity>
-			</View>}
-			{ isPending && <Text>Loading data...</Text>}
+		
+		<View style={isPending ? styles.loading : styles.normal} pointerEvents={isPending ? 'none' : 'auto'}>
+			<ScrollView style={styles.mainScroll}>
 			{ !isPending && data && data.shoppingLists.map((shoppingList) => 
 				(	
 					<View style={styles.container}>
-						<TouchableOpacity onPress={ ()=> navigation.navigate('List details', { shoppingList: shoppingList, onUpdate: updateList })}>
+						<TouchableOpacity onPress={ ()=> navigation.navigate('List details', { shoppingList: shoppingList, onSave: onSave, onDelete: onDelete })}>
 							<View style={styles.textContainer}>
 								<Text style={styles.bigBlue}>Date: {shoppingList.created}</Text>
 								<Text style={styles.bigBlue}>Items: {shoppingList.items.length}</Text>
-							</View>
-						</TouchableOpacity>
-						<TouchableOpacity onPress={() => deleteList(shoppingList.id)}>
-							<View style={styles.verticalCenter}>
-								<Image source={require('../assets/images/delete.png')} />
-								<Text>Delete</Text>
 							</View>
 						</TouchableOpacity>
 					</View>
 				)
 			)}
 		</ScrollView>
+		<View style={styles.actionButtonContainer}>
+				<TouchableOpacity onPress={() => createNewList()}>
+							<View>
+								<Image source={require('../assets/images/add.png')} />
+								<Text>New list</Text>
+							</View>
+				</TouchableOpacity>
+			</View>
+		</View>
+		
 	);
 }
 
+//Styles
+
 const styles = StyleSheet.create({
-	main: {
-		flex: 1,
-		alignItems: 'center'
+	mainScroll: {
+		marginBottom: 100
 	},
 	container: {
 		display: 'flex',
 		flexDirection: 'row',
 		justifyContent: 'center',
 		
-		backgroundColor: "#ebeac5",
+		backgroundColor: "#d9ffee",
 		shadowColor: "#000",
 		shadowOffset: {
 			width: 0,
@@ -152,18 +132,18 @@ const styles = StyleSheet.create({
 		shadowOpacity: 0.32,
 		shadowRadius: 5.46,
 		elevation: 9,
-		margin: 20
+		margin: 10
 	},
 	verticalCenter: {
 		marginLeft: 40,
 		marginRight: 30,
-		justifyContent: 'center', //Centered horizontally
-    	alignItems: 'center', //Centered vertically
+		justifyContent: 'center',
+    	alignItems: 'center',
     	flex:1
 	},
 	centered: {
-		justifyContent: 'center', //Centered horizontally
-    	alignItems: 'center', //Centered vertically
+		justifyContent: 'center',
+    	alignItems: 'center',
 		margin: 30
 	},
 	bigBlue: {
@@ -175,11 +155,25 @@ const styles = StyleSheet.create({
 		margin: 15,
 		marginLeft: 30,
 	},
-	bottom: {
-		flex: 1,
-		justifyContent: 'flex-end',
-		marginBottom: 36
-	  }
+	actionButtonContainer: {
+		backgroundColor: "#d9ffee",
+		borderTopWidth: 6,
+		position: 'absolute',
+		height: 100,
+		left: 0, 
+		top: Dimensions.get('window').height - 150, 
+		width: Dimensions.get('window').width,
+		display: 'flex',
+		flexDirection: 'row',
+		justifyContent: 'center',
+		alignItems: 'center'
+	},
+	loading: {
+		opacity: 0.5,
+	},
+	normal: {
+		opacity: 1
+	}
   });
  
 export default ShoppingListPreview;

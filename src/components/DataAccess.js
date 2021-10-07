@@ -10,7 +10,7 @@ const getAll = () => {
   useEffect(() => {
       fetch(dbUrl)
       .then(res => {
-        if (!res.ok) { // error coming back from server
+        if (!res.ok) { 
           throw Error('could not fetch the data for that resource');
         } 
         return res.json();
@@ -21,7 +21,6 @@ const getAll = () => {
         setError(null);
       })
       .catch(err => {
-        // auto catches network / connection error
         setIsPending(false);
         setError(err.message);
       })
@@ -31,4 +30,18 @@ const getAll = () => {
 }
  
 export default getAll;
+
+export function update(data) {
+  fetch('https://api.jsonbin.io/b/615e21759548541c29bf2c80', {
+			method: 'PUT',
+			headers: { "Content-Type": "application/json" },
+			body: JSON.stringify(data)
+  }).then(() => {
+    console.log("fetch done")	
+  }).catch(err => {
+    console.log(err)
+  })
+}
+
+
 
