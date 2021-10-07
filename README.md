@@ -24,6 +24,8 @@ The application can be run on either phone emulators or physical devices. The ab
 * with a terminal open in the root folder, run ```npx react-native start``` to start the metro service; leave it running in the terminal
 * with the terminal open in the root folder, run ```npx react-native run-android``` to build the app on the test device and run it
 
+To compile the code, run ```gradlew assembleRelease``` in the _android_ folder. This will create the .apk file into _android/app/build/outputs/apk_ folder. 
+
 To run the tests, in the root folder run ```npm run test```, which runs tests using jist.
 
 ## Architecture overview
